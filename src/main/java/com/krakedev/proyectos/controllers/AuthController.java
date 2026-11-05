@@ -4,6 +4,9 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -50,6 +53,17 @@ public class AuthController {
 			return ResponseEntity.ok(Map.of("token", token));
 		}
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contrasenia incorrecta");
+	}
+
+	@GetMapping("/perfil")
+	public ResponseEntity<?> verPerfil() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		String usuario = auth.getName();
+		String rol = auth.getAuthorities().iterator().next().getAuthority();
+
+		return ResponseEntity.ok(Map.of("mensaje", "Bienvenido al sistema protegido por Spring Security", "usuario",
+				usuario, "rol_detectado", rol, "status", "Autenticado exitosamente"));
 	}
 
 	@PostMapping("/logout")
