@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ public class ProyectoController {
 	}
 
 	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> guardar(@RequestBody Proyecto proyecto) {
 		try {
 			Proyecto guardado = service.guardar(proyecto);
@@ -39,6 +41,7 @@ public class ProyectoController {
 	}
 
 	@GetMapping
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	public ResponseEntity<?> listar() {
 		try {
 			List<Proyecto> proyectos = service.listar();
@@ -82,6 +85,7 @@ public class ProyectoController {
 	}
 
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> eliminar(@PathVariable int id) {
 		try {
 			boolean eliminado = service.eliminar(id);
